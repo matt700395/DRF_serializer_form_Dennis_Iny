@@ -1,18 +1,16 @@
-from django.http import JsonResponse
-from django.shortcuts import render
 from django.shortcuts import render
 from django.http import JsonResponse
+from rest_framework import viewsets
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from .serializers import TaskSerializer
 
-from api.models import Task
-from api.serializers import TaskSerializer
+from .models import Task
+# Create your views here.
 
-'''url 패턴을 모두 보여주는 view임, Json 패턴을 dictionary형태의 데이털 뿐임'''
 @api_view(['GET'])
 def apiOverview(request):
-
 	api_urls = {
 		'List':'/task-list/',
 		'Detail View':'/task-detail/<str:pk>/',
@@ -22,18 +20,19 @@ def apiOverview(request):
 		}
 
 	return Response(api_urls)
-
+'''
 @api_view(['GET'])
 def taskList(request):
-	tasks = Task.objects.all() #model에서 Task 데이터를 가져옴
-	serializer = TaskSerializer(tasks, many=True)# 가져온 데이터를 Serializer로 serializing함
-	return Response(serializer.data) #serializing된 데이터를 response로 내보냄
+	tasks = Task.objects.all().order_by('-id')
+	serializer = TaskSerializer(tasks, many=True)
+	return Response(serializer.data)
 
 @api_view(['GET'])
 def taskDetail(request, pk):
 	tasks = Task.objects.get(id=pk)
 	serializer = TaskSerializer(tasks, many=False)
 	return Response(serializer.data)
+
 
 @api_view(['POST'])
 def taskCreate(request):
@@ -61,3 +60,10 @@ def taskDelete(request, pk):
 	task.delete()
 
 	return Response('Item succsesfully delete!')
+
+'''
+
+class taskViewSet(viewsets.ModelViewSet):
+	queryset = Task.objects.all()
+	serializer_class = TaskSerializer
+

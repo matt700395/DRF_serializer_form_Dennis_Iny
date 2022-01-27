@@ -28,4 +28,9 @@ def taskList(request):
 	tasks = Task.objects.all() #model에서 Task 데이터를 가져옴
 	serializer = TaskSerializer(tasks, many=True)# 가져온 데이터를 Serializer로 serializing함
 	return Response(serializer.data) #serializing된 데이터를 response로 내보냄
-	
+
+@api_view(['GET'])
+def taskDetail(request, pk):
+	tasks = Task.objects.get(id=pk)
+	serializer = TaskSerializer(tasks, many=False)
+	return Response(serializer.data)
